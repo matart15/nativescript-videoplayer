@@ -1,16 +1,28 @@
 import { Observable } from 'data/observable';
+import { screen } from "platform";
 import { EventData } from 'data/observable';
 import { Page } from 'ui/page';
 import { isAndroid, isIOS } from 'platform';
 import { topmost } from 'ui/frame';
 import { setInterval } from "timer";
 import { Video } from 'nativescript-videoplayer';
+import * as application from "application";
+declare var android: any;
 
 export class HelloWorldModel extends Observable {
   public videoSrc: string;
   public currentTime: any;
   public videoDuration: any;
   private _videoPlayer: Video;
+
+  screenWidth = 320;
+
+  playerWidth = 320;
+  playerHeight = 320;
+  playerOffsetX = 0;
+  playerOffsetY = 0;
+
+  // @ViewChild("videoPlayer") videoPlayer:ElementRef;
 
   constructor(mainpage: Page) {
     super();
@@ -20,6 +32,10 @@ export class HelloWorldModel extends Observable {
     this.videoDuration = '';
     this.getVideoDuration();
     this.trackVideoCurrentPosition();
+
+    this.screenWidth = screen.mainScreen.widthPixels / screen.mainScreen.scale
+    this.playerWidth = this.screenWidth
+    this.playerHeight = this.screenWidth
   }
 
   /**
@@ -125,6 +141,43 @@ export class HelloWorldModel extends Observable {
     }, 200);
     return trackInterval;
     // }
+
+  }
+
+
+  playerCallback(e) {
+    console.log("asdf0", this._videoPlayer)
+    console.log("asdf0", this._videoPlayer.width)
+    console.log("asdf1", this._videoPlayer.height)
+    console.log("asdf2", this._videoPlayer.android)
+    console.log("asdf3", this._videoPlayer.android.src)
+    // var vidSource = fromFile(this.videoLink)
+    console.log("asdf4", e)
+    // console.log("asdf5", JSON.stringify(e)) // this gives "converting circular structure to JSON" error
+    console.log("asdf6", e.width) // this gives just [object Object]
+
+
+    if (application.android) {
+      var metaRetriever = new android.media.MediaMetadataRetriever();
+      metaRetriever.setDataSource(this._videoPlayer.android.src);
+      var height = metaRetriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
+      console.log("____________________", "1", height, width)
+      var width = metaRetriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
+
+      var min = Math.min(height, width);
+      var rate = this.screenWidth / min
+      this.playerWidth = width * rate
+      this.playerHeight = height * rate
+      this.playerOffsetX = (this.screenWidth - this.playerWidth) / 2
+      this.playerOffsetY = (this.screenWidth - this.playerHeight) / 2
+      console.log("____________________", "2", this.playerHeight, this.playerWidth)
+
+      // above code did not change UI in runtime so force set properties 
+      this._videoPlayer.width = this.playerWidth
+      this._videoPlayer.height = this.playerHeight
+      this._videoPlayer.marginLeft = this.playerOffsetX
+      this._videoPlayer.marginTop = this.playerOffsetY
+    }
 
   }
 

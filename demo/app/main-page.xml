@@ -12,10 +12,32 @@
         <Label text="Video Duration: " textWrap="true" />
         <Label text="{{ videoDuration }}" class="message" textWrap="true" />
       </StackLayout>
-      <GridLayout rows="*" columns="*, *">
-        <Label text="Label On Top of Video View" row="0" colSpan="2" color="#fff" horizontalAlignment="center" />
-        <Video:Video id="nativeVideoPlayer" controls="true" finished="{{ videoFinished }}" loop="true" autoplay="false" height="280" src="~/videos/big_buck_bunny.mp4" row="0" colSpan="2" />
-      </GridLayout>
+      <!--<GridLayout rows="*" columns="*, *" style="background-color: green;">-->
+    <AbsoluteLayout style="background-color: green;" row="0">
+        <Label text="Label On Top of Video View" left="30" top="270" row="0" colSpan="2" color="#fff" horizontalAlignment="center" />
+
+        <Video:Video 
+          left="{{playerOffsetX}}"
+          top="{{playerOffsetY}}"
+          width="{{playerWidth}}"
+          height="{{playerHeight}}"
+          stretch="aspectFill"
+          verticalAlignment="center"
+          horizontalAlignment="center"
+          loadingComplete="{{playerCallback}}"
+          
+          id="nativeVideoPlayer" 
+          controls="true" 
+          finished="{{ videoFinished }}" 
+          loop="true" 
+          autoplay="false" 
+          height="280" 
+          src="~/videos/big_buck_bunny.mp4" 
+          row="0" 
+          colSpan="2" />
+
+  </AbsoluteLayout>
+      <!--</GridLayout>-->
       <StackLayout orientation="horizontal">
         <Button text="Pause" width="33%" tap="{{ pauseVideo }}" />
         <Button text="Play" width="33%" tap="{{ playVideo }}" />

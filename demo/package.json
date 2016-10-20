@@ -9,7 +9,7 @@
     }
   },
   "dependencies": {
-    "nativescript-videoplayer": "file:..",
+    "nativescript-videoplayer": "^1.1.1",
     "tns-core-modules": "^2.3.0"
   },
   "devDependencies": {
